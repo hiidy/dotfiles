@@ -1,36 +1,36 @@
-# ==============================================================================
-# 🚀 Zsh 설정 최적화 버전
-# ==============================================================================
 
 # ------------------------------
-# 🧱 PATH 환경변수 설정 (통합 관리)
+# ⚡ Powerlevel10k Instant Prompt (반드시 최상단에 위치)
 # ------------------------------
-# PATH는 중복 추가를 방지하기 위해 이 섹션에서 통합 관리합니다.
-# Homebrew 경로를 최우선으로 설정
-export PATH="/opt/homebrew/bin:$PATH"
-
-# Homebrew가 직접 PATH에 연결하지 않는 formula 경로 추가 (e.g., bison)
-export PATH="/opt/homebrew/opt/bison/bin:$PATH"
-
-# Python 관련 경로 (예: Jupyter) - 필요시 실제 경로로 수정 후 주석 해제
-# export PATH="$HOME/.local/bin:$PATH" # pipx나 pip --user로 설치한 경우
+# 이 설정으로 첫 프롬프트가 즉시 표시됩니다
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # ------------------------------
-# 🚀 Zinit (Zsh 플러그인 매니저) 설치 및 초기화
+# PATH 환경변수 설정 (통합 관리)
+# ------------------------------
+typeset -U path  # PATH 중복 자동 제거
+path=(
+  /opt/homebrew/bin
+  /opt/homebrew/opt/bison/bin
+  /opt/homebrew/opt/mysql-client/bin
+  $path
+)
+export PATH
+
+# ------------------------------
+# Zinit (Zsh 플러그인 매니저) 설치 및 초기화
 # ------------------------------
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+if [[ ! -d $ZINIT_HOME ]]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-# zinit 명령어 자동완성
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-zmodload zsh/zprof # 성능 분석용
-
 # ------------------------------
-# ☕ Java 버전 스위처 (PATH 중복 방지 개선)
+# Java 버전 스위처 (개선된 버전)
 # ------------------------------
 jenv() {
   local version=$1
@@ -47,21 +47,23 @@ jenv() {
   esac
 
   # PATH에서 기존 JAVA_HOME/bin 제거
-  export PATH=$(echo "$PATH" | sed -E "s#:$JAVA_HOME/bin##g" | sed -E "s#$JAVA_HOME/bin:##g")
-
+  path=(${path:#$JAVA_HOME/bin})
+  
   # 새로운 JAVA_HOME 적용
   export JAVA_HOME="$new_home"
-  export PATH="$JAVA_HOME/bin:$PATH"
+  path=($JAVA_HOME/bin $path)
+  export PATH
 
   echo "✅ JAVA_HOME switched to $JAVA_HOME"
   java -version
 }
+
 # 기본 Java 버전 설정
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
-export PATH="$JAVA_HOME/bin:$PATH"
+path=($JAVA_HOME/bin $path)
 
 # ------------------------------
-# 🐍 Python 별칭 (alias)
+# Python
 # ------------------------------
 alias python='python3'
 alias py310='python3.10'
@@ -69,81 +71,97 @@ alias py312='python3.12'
 alias py313='python3.13'
 
 # ------------------------------
-# 🎨 Powerlevel10k 테마
+# Powerlevel10k 테마
 # ------------------------------
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
-# P10k 설정 파일 로드
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 # ------------------------------
-# 🔌 Zinit 플러그인 목록
+# Zinit 플러그인
 # ------------------------------
-zinit light zsh-users/zsh-completions # 자동완성 기능 강화
-zinit light rupa/z                  # 디렉토리 이동 편의 도구 (autojump 대체)
+# 1. Completions
+zinit light zsh-users/zsh-completions
 
-# zsh-autosuggestions (명령어 추천) - 비동기, lazy load로 성능 최적화
-zinit ice wait lucid atload='_zsh_autosuggest_start'
+# 3. Autosuggestions
+zinit ice wait lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
+# 성능 향상을 위한 autosuggestions 설정
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
-# zsh-syntax-highlighting (명령어 하이라이팅) - 항상 마지막에 로드
+# 4. Syntax Highlighting
 zinit ice wait lucid
 zinit light zsh-users/zsh-syntax-highlighting
 
 # ------------------------------
-# 🐳 Docker CLI 자동완성
+# zoxide
 # ------------------------------
-# 하드코딩된 경로를 $HOME으로 변경하여 이식성 확보
-fpath=($HOME/.docker/completions $fpath)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 # ------------------------------
-# 🔄 NVM (Node Version Manager) Lazy-load
+# NVM 
 # ------------------------------
 export NVM_DIR="$HOME/.nvm"
-load-nvm() {
-  [[ -n "$NVM_LOADED" ]] && return # 이미 로드되었으면 실행 중단
-  # node, npm, npx, nvm 명령어 실행 시에만 NVM을 로드
-  case "${1:-}" in
-    node|npm|npx|nvm) ;;
-    *) return ;;
-  esac
-  export NVM_LOADED=1
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
-autoload -U add-zsh-hook
-add-zsh-hook preexec load-nvm # 명령 실행 직전에 load-nvm 함수 실행
+
+# NVM 관련 명령어들을 함수로 래핑
+for cmd in node npm npx nvm; do
+  eval "${cmd}() {
+    unfunction node npm npx nvm 2>/dev/null
+    [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"
+    [ -s \"$NVM_DIR/bash_completion\" ] && . \"$NVM_DIR/bash_completion\"
+    ${cmd} \"\$@\"
+  }"
+done
 
 # ------------------------------
-# 📜 Zsh History 설정
+# Compinit
 # ------------------------------
-HISTFILE=~/.zsh_history         # 히스토리 파일 경로
-HISTSIZE=100000                 # 메모리에 저장할 히스토리 개수
-HISTFILESIZE=100000             # 파일에 저장할 히스토리 개수
+# Docker 및 기타 completion 경로 추가
+fpath=($HOME/.docker/completions $fpath)
 
-# 히스토리 관련 옵션
-setopt INC_APPEND_HISTORY       # 명령 실행 즉시 히스토리에 추가
-setopt SHARE_HISTORY            # 여러 터미널 세션 간 히스토리 공유
-setopt HIST_IGNORE_ALL_DUPS     # 모든 중복 명령어는 하나만 기록
-setopt HIST_REDUCE_BLANKS       # 불필요한 공백 제거
-
-# ------------------------------
-# ⚡️ 사용자 정의 별칭 (Alias)
-# ------------------------------
-# 더 나은 CLI 도구들로 기본 명령어 대체
-# alias cat='bat'       # https://github.com/sharkdp/bat
-# alias ls='eza -lh --git' # https://github.com/eza-community/eza
-# alias find='fd'       # https://github.com/sharkdp/fd
-# alias grep='rg'       # https://github.com/BurntSushi/ripgrep
-# alias du='ncdu'       # https://dev.yorhel.nl/ncdu
-# alias df='duf'        # https://github.com/muesli/duf
-# alias top='htop'      # https://htop.dev/
-
-# 생산성 별칭
-alias vf='vim $(fd . | fzf)' # fzf로 파일 검색 후 vim으로 열기
-export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/jeonbyeong-ung/.docker/completions $fpath)
+# Compinit 캐시 관리 (zsh4humans 방식)
 autoload -Uz compinit
-compinit
-# End of Docker CLI completions
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+  # 24시간에 한 번만 전체 검사
+  compinit
+else
+  # 그 외에는 빠른 로드
+  compinit -C
+fi
+
+# zinit 자동완성
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# ------------------------------
+# Zsh History
+# ------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+
+setopt EXTENDED_HISTORY          # 타임스탬프 기록
+setopt INC_APPEND_HISTORY        # 즉시 히스토리에 추가
+setopt SHARE_HISTORY             # 세션 간 히스토리 공유
+setopt HIST_IGNORE_ALL_DUPS      # 모든 중복 제거
+setopt HIST_REDUCE_BLANKS        # 불필요한 공백 제거
+setopt HIST_VERIFY               # 히스토리 확장 시 편집 기회 제공
+
+# ------------------------------
+# alias
+# ------------------------------
+# 더 나은 CLI 도구들로 기본 명령어 대체 (설치되어 있는 경우에만)
+(( $+commands[bat] )) && alias cat='bat'
+(( $+commands[eza] )) && alias ls='eza -lh --git'
+(( $+commands[fd] )) && alias find='fd'
+(( $+commands[rg] )) && alias grep='rg'
+
+if (( $+commands[fzf] && $+commands[fd] )); then
+  alias vf='vim $(fd . | fzf)'
+fi
+
+# ------------------------------
+# Powerlevel10k load
+# ------------------------------
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
