@@ -29,6 +29,7 @@ if [[ ! -d $ZINIT_HOME ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
+
 # ------------------------------
 # Java 버전 스위처 (개선된 버전)
 # ------------------------------
@@ -156,6 +157,7 @@ setopt HIST_VERIFY               # 히스토리 확장 시 편집 기회 제공
 (( $+commands[eza] )) && alias ls='eza -lh --git'
 (( $+commands[fd] )) && alias find='fd'
 (( $+commands[rg] )) && alias grep='rg'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 if (( $+commands[fzf] && $+commands[fd] )); then
   alias vf='vim $(fd . | fzf)'
