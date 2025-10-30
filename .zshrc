@@ -20,6 +20,12 @@ path=(
 export PATH
 
 # ------------------------------
+# SDKMAN! 초기화 (필수 추가: 이전에 누락됨)
+# ------------------------------
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# ------------------------------
 # Zinit (Zsh 플러그인 매니저) 설치 및 초기화
 # ------------------------------
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -28,40 +34,6 @@ if [[ ! -d $ZINIT_HOME ]]; then
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
-
-
-# ------------------------------
-# Java 버전 스위처 (개선된 버전)
-# ------------------------------
-jenv() {
-  local version=$1
-  local base="/Library/Java/JavaVirtualMachines"
-  local new_home=""
-
-  case "$version" in
-    8)  new_home="$base/zulu-8.jdk/Contents/Home" ;;
-    11) new_home="$base/zulu-11.jdk/Contents/Home" ;;
-    17) new_home="$base/amazon-corretto-17.jdk/Contents/Home" ;;
-    *)
-      echo "Usage: jenv [8|11|17]"
-      return 1 ;;
-  esac
-
-  # PATH에서 기존 JAVA_HOME/bin 제거
-  path=(${path:#$JAVA_HOME/bin})
-  
-  # 새로운 JAVA_HOME 적용
-  export JAVA_HOME="$new_home"
-  path=($JAVA_HOME/bin $path)
-  export PATH
-
-  echo "✅ JAVA_HOME switched to $JAVA_HOME"
-  java -version
-}
-
-# 기본 Java 버전 설정
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
-path=($JAVA_HOME/bin $path)
 
 # ------------------------------
 # Python
@@ -96,9 +68,9 @@ zinit light zsh-users/zsh-syntax-highlighting
 # ------------------------------
 # zoxide
 # ------------------------------
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-fi
+# if command -v zoxide >/dev/null 2>&1; then
+#   eval "$(zoxide init zsh)"
+# fi
 
 # ------------------------------
 # NVM 
