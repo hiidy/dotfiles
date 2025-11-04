@@ -1,16 +1,14 @@
-
 # ------------------------------
-# ⚡ Powerlevel10k Instant Prompt (반드시 최상단에 위치)
+# ⚡ Powerlevel10k Instant Prompt
 # ------------------------------
-# 이 설정으로 첫 프롬프트가 즉시 표시됩니다
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # ------------------------------
-# PATH 환경변수 설정 (통합 관리)
+# PATH 환경변수 설정
 # ------------------------------
-typeset -U path  # PATH 중복 자동 제거
+typeset -U path
 path=(
   /opt/homebrew/bin
   /opt/homebrew/opt/bison/bin
@@ -19,14 +17,26 @@ path=(
 )
 export PATH
 
-# ------------------------------
-# SDKMAN! 초기화 (필수 추가: 이전에 누락됨)
-# ------------------------------
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # ------------------------------
-# Zinit (Zsh 플러그인 매니저) 설치 및 초기화
+# SDKMAN Lazy Loading
+# ------------------------------
+export SDKMAN_DIR="$HOME/.sdkman"
+
+# SDKMAN 명령어들을 함수로 래핑 (NVM 방식과 동일)
+_sdkman_lazy_load() {
+  unset -f sdk java gradle maven kotlin scala sbt springboot micronaut _sdkman_lazy_load
+  [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+}
+
+# 자주 쓰는 명령어들
+sdk() { _sdkman_lazy_load; sdk "$@"; }
+java() { _sdkman_lazy_load; java "$@"; }
+gradle() { _sdkman_lazy_load; gradle "$@"; }
+
+
+# ------------------------------
+# Zinit 초기화
 # ------------------------------
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 if [[ ! -d $ZINIT_HOME ]]; then
@@ -44,7 +54,7 @@ alias py312='python3.12'
 alias py313='python3.13'
 
 # ------------------------------
-# Powerlevel10k 테마
+# Powerlevel10k
 # ------------------------------
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
@@ -52,58 +62,50 @@ zinit light romkatv/powerlevel10k
 # ------------------------------
 # Zinit 플러그인
 # ------------------------------
-# 1. Completions
 zinit light zsh-users/zsh-completions
-
-# 3. Autosuggestions
-zinit ice wait lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
-# 성능 향상을 위한 autosuggestions 설정
 export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-
-# 4. Syntax Highlighting
-zinit ice wait lucid
 zinit light zsh-users/zsh-syntax-highlighting
 
-# ------------------------------
-# zoxide
-# ------------------------------
-# if command -v zoxide >/dev/null 2>&1; then
-#   eval "$(zoxide init zsh)"
-# fi
+zinit light Aloxaf/fzf-tab
+# zinit light wfxr/forgit
+# zinit light zsh-users/zsh-history-substring-search
 
 # ------------------------------
-# NVM 
+# zoxide Lazy Loading
+# ------------------------------
+if command -v zoxide >/dev/null 2>&1; then
+  # z 명령어만 lazy load (zi는 Zinit 것 그대로)
+  z() {
+    unfunction z
+    eval "$(zoxide init zsh)"
+    z "$@"
+  }
+fi
+
+# ------------------------------
+# NVM Lazy Loading
 # ------------------------------
 export NVM_DIR="$HOME/.nvm"
 
-# NVM 관련 명령어들을 함수로 래핑
-for cmd in node npm npx nvm; do
-  eval "${cmd}() {
-    unfunction node npm npx nvm 2>/dev/null
-    [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"
-    [ -s \"$NVM_DIR/bash_completion\" ] && . \"$NVM_DIR/bash_completion\"
-    ${cmd} \"\$@\"
-  }"
-done
+_nvm_lazy_load() {
+  unset -f node npm npx nvm _nvm_lazy_load
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+}
+
+node() { _nvm_lazy_load; node "$@"; }
+npm() { _nvm_lazy_load; npm "$@"; }
+npx() { _nvm_lazy_load; npx "$@"; }
+nvm() { _nvm_lazy_load; nvm "$@"; }
 
 # ------------------------------
 # Compinit
 # ------------------------------
-# Docker 및 기타 completion 경로 추가
 fpath=($HOME/.docker/completions $fpath)
 
-# Compinit 캐시 관리 (zsh4humans 방식)
-autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-  # 24시간에 한 번만 전체 검사
-  compinit
-else
-  # 그 외에는 빠른 로드
-  compinit -C
-fi
+autoload -Uz compinit && compinit
 
-# zinit 자동완성
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
@@ -114,17 +116,16 @@ HISTFILE=~/.zsh_history
 HISTSIZE=100000
 SAVEHIST=100000
 
-setopt EXTENDED_HISTORY          # 타임스탬프 기록
-setopt INC_APPEND_HISTORY        # 즉시 히스토리에 추가
-setopt SHARE_HISTORY             # 세션 간 히스토리 공유
-setopt HIST_IGNORE_ALL_DUPS      # 모든 중복 제거
-setopt HIST_REDUCE_BLANKS        # 불필요한 공백 제거
-setopt HIST_VERIFY               # 히스토리 확장 시 편집 기회 제공
+setopt EXTENDED_HISTORY
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
 
 # ------------------------------
-# alias
+# Aliases
 # ------------------------------
-# 더 나은 CLI 도구들로 기본 명령어 대체 (설치되어 있는 경우에만)
 (( $+commands[bat] )) && alias cat='bat'
 (( $+commands[eza] )) && alias ls='eza -lh --git'
 (( $+commands[fd] )) && alias find='fd'
@@ -136,6 +137,6 @@ if (( $+commands[fzf] && $+commands[fd] )); then
 fi
 
 # ------------------------------
-# Powerlevel10k load
+# Powerlevel10k Config
 # ------------------------------
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
