@@ -84,6 +84,12 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 # ------------------------------
+# mcfly Lazy Loading
+# ------------------------------
+eval "$(mcfly init zsh)"
+
+
+# ------------------------------
 # NVM Lazy Loading
 # ------------------------------
 export NVM_DIR="$HOME/.nvm"
@@ -140,3 +146,7 @@ fi
 # Powerlevel10k Config
 # ------------------------------
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+# Created by `pipx` on 2025-11-10 17:35:20
+export PATH="$PATH:/Users/jeonbyeong-ung/.local/bin"
+export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
+export PATH=$PATH:/usr/local/opt/riscv-gnu-toolchain/bin
