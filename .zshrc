@@ -133,7 +133,12 @@ setopt HIST_VERIFY
 # Aliases
 # ------------------------------
 (( $+commands[bat] )) && alias cat='bat'
-(( $+commands[eza] )) && alias ls='eza -lh --git'
+if (( $+commands[eza])); then
+    alias ls='eza'
+    alias ll='eza -lh --git'
+    alias la='eza -lah --git'
+    alias lt='eza --tree --level=2'
+fi
 (( $+commands[fd] )) && alias find='fd'
 (( $+commands[rg] )) && alias grep='rg'
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
