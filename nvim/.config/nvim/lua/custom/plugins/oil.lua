@@ -9,6 +9,7 @@ return {
   opts = {
     keymaps = {
       -- 충돌 방지만 추가
+      ["<C-s>"] = false,
       ["<C-h>"] = false,
       ["<C-l>"] = false,
     },
