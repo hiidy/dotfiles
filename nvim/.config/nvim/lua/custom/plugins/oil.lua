@@ -11,7 +11,6 @@ return {
       -- 충돌 방지만 추가
       ["<C-h>"] = false,
       ["<C-l>"] = false,
-      ["<C-s>"] = false,
     },
   },
 }

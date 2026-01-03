@@ -2,8 +2,8 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
-vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<CR>', { desc = 'Save File' })
-vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-q>', '<cmd>q<CR>', { desc = 'Quit File' })
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-q>", vim.cmd.quit, { desc = "Quit File" })
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", vim.cmd.write, { desc = "Save File" })
 
 vim.keymap.set('n', 's', '')
 vim.keymap.set('n', 'sv', '<cmd>vsplit<CR>', { desc = 'Vertical split' })
