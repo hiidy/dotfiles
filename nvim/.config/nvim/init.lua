@@ -652,6 +652,7 @@ require('lazy').setup({
       local servers = {
         -- init.lua 내부
         gopls = {
+          root_dir = require('lspconfig.util').root_pattern('go.mod', '.git'),
           settings = {
             gopls = {
               analyses = { unusedparams = true },

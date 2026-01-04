@@ -1,5 +1,7 @@
 -- lua/custom/keymaps.lua
 
+local opts = { noremap = true, silent = true }
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -46,3 +48,17 @@ vim.keymap.set('n', 'sv', '<cmd>vsplit<CR>', { desc = 'Vertical split' })
 vim.keymap.set('n', 'sh', '<cmd>split<CR>', { desc = 'Horizontal split' })
 vim.keymap.set('n', 'sc', '<C-w>c', { desc = 'Close window' })
 vim.keymap.set('n', 'so', '<C-w>o', { desc = 'Close other windows' })
+
+vim.keymap.set("n", "fe", "<cmd>GoIfErr<CR>", { desc = "Insert if err block" })
+vim.keymap.set("n", "fs", "<cmd>GoFillStruct<CR>", { desc = "Fill Struct" })
+vim.keymap.set("n", "<leader>fc", "<cmd>GoFillSwitch<CR>", { desc = "Fill Switch" })
+vim.keymap.set("n", "<leader>ta", "<cmd>GoAddTag<CR>", { desc = "Add struct tags" })
+vim.keymap.set("n", "<leader>tr", "<cmd>GoRmTag<CR>", { desc = "Remove struct tags" })
+vim.keymap.set("n", "<leader>tc", "<cmd>GoClearTag<CR>", { desc = "Clear struct tags" })
+vim.keymap.set("n", "<leader>i", "<cmd>GoImports<CR>", { desc = "Organize imports" })
+vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
+vim.keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", { desc = "Go to Definition" })
+vim.keymap.set("n", "<CR>", "<cmd>FzfLua lsp_definitions<CR>", { desc = "Go to Definition" })
+vim.keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>", { desc = "Go to References" })
+vim.keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", { desc = "Go to Implementation" })
+vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
