@@ -651,15 +651,15 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- init.lua 내부
-        -- gopls = {
-        --   settings = {
-        --     gopls = {
-        --       analyses = { unusedparams = true },
-        --       staticcheck = true,
-        --       gofumpt = true,
-        --     },
-        --   },
-        -- },
+        gopls = {
+          settings = {
+            gopls = {
+              analyses = { unusedparams = true },
+              staticcheck = false,
+              gofumpt = true,
+            },
+          },
+        },
         protols = {},
         yamlls = {},
         -- clangd = {},
@@ -709,11 +709,11 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
 
         -- [추가] Go & 기타 도구들
-        -- 'goimports', -- import 정리 (필수)
-        -- 'gofumpt', -- 포맷팅 (필수)
-        -- 'golangci-lint', -- 린터 (추천)
+        'goimports', -- import 정리 (필수)
+        'gofumpt', -- 포맷팅 (필수)
+        'golangci-lint', -- 린터 (추천)
         'buf', -- Protobuf 도구 (선택)
-        'yamllint', -- YAML 린터 (선택)
+        'yamllint', -- YAML 린터 (선택)a
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -766,7 +766,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- go = { 'goimports', 'gofumpt' },
+        go = { 'goimports', 'gofumpt' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
