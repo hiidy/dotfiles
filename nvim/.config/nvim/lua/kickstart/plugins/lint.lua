@@ -9,7 +9,7 @@ return {
         markdown = { 'markdownlint' },
         go = { 'golangcilint' },
         proto = { 'buf_lint' },
-        yaml = { 'yamllint' },
+        -- yaml = { 'yamllint' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

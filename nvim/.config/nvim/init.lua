@@ -527,7 +527,7 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
-          local fzf = require('fzf-lua')
+          local fzf = require 'fzf-lua'
 
           -- [Fzf-Lua] Find references
           map('grr', fzf.lsp_references, '[G]oto [R]eferences')
@@ -768,6 +768,8 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'goimports', 'gofumpt' },
+        proto = { 'buf' },
+        yaml = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1032,7 +1034,6 @@ require('lazy').setup({
 })
 
 require 'custom.keymaps'
-
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
