@@ -661,7 +661,7 @@ require('lazy').setup({
             },
           },
         },
-        protols = {
+        buf_ls = {
           root_dir = require('lspconfig.util').root_pattern('buf.yaml', '.git'),
         },
         yamlls = {},
