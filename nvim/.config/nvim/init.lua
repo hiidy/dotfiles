@@ -111,9 +111,16 @@ vim.o.mouse = 'a'
 vim.o.showmode = false
 
 vim.o.tabstop = 4
+vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
+vim.o.shiftround = true
 vim.o.expandtab = true
+vim.o.autoindent = true
+vim.o.smartindent = true
 vim.opt.swapfile = false
+
+vim.o.termguicolors = true
+vim.o.wildmenu = true
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -150,6 +157,8 @@ vim.o.undofile = true
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
+vim.o.hlsearch = true
+vim.o.incsearch = true
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
@@ -182,12 +191,19 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 8
+vim.o.sidescrolloff = 8
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+vim.g.completeopt = "menu,menuone,noselect,noinsert"
+vim.o.shortmess = vim.o.shortmess .. "c"
+vim.o.pumheight = 10
+vim.o.showtabline = 2
+vim.o.showmode = false
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -997,11 +1013,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
