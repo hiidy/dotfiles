@@ -107,9 +107,6 @@ vim.o.number = true
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
 
--- Don't show the mode, since it's already in the status line
-vim.o.showmode = false
-
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
@@ -129,23 +126,21 @@ vim.o.wildmenu = true
 
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
-end)
 
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-
-  -- SSH/원격 환경용 OSC 52
-  vim.g.clipboard = {
-    name = 'OSC 52',
-    copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy '+',
-      ['*'] = require('vim.ui.clipboard.osc52').copy '*',
-    },
-    paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste '+',
-      ['*'] = require('vim.ui.clipboard.osc52').paste '*',
-    },
-  }
+  -- SSH/원격 환경에서만 OSC 52 사용
+  if os.getenv 'SSH_TTY' then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+        ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+      },
+      paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+        ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+      },
+    }
+  end
 end)
 
 -- Enable break indent
@@ -673,10 +668,22 @@ require('lazy').setup({
               client.server_capabilities.semanticTokensProvider = nil
             end
           end,
+          init_options = {
+            usePlaceholders = true,
+          },
           root_dir = require('lspconfig.util').root_pattern('go.mod', '.git'),
           settings = {
             gopls = {
               analyses = { unusedparams = true },
+              hints = {
+                parameterNames = true,
+                constantValues = true,
+                assignVariableTypes = false,
+                compositeLiteralFields = false,
+                compositeLiteralTypes = false,
+                functionTypeParameters = false,
+                rangeVariableTypes = false,
+              },
               staticcheck = false,
               gofumpt = true,
             },

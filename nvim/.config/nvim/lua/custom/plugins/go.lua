@@ -7,7 +7,6 @@ return {
     'nvim-treesitter/nvim-treesitter',
   },
   ft = { 'go', 'gomod' },
-  event = { 'CmdlineEnter' },
   build = ':lua require("go.install").update_all_sync()',
   config = function()
     require('go').setup {
@@ -16,17 +15,16 @@ return {
       -- lsp_cfg = true,
       -- lsp_gofumpt = true,
       -- lsp_on_attach = true,
+      verbose = false,
+      diagnostic = { -- set diagnostic to false to disable vim.diagnostic.config setup,
+        -- true: default nvim setup
+        hdlr = false, -- hook lsp diag handler and send diag to quickfix
+        underline = true,
+        virtual_text = { spacing = 2, prefix = '' }, -- virtual text setup
+        signs = { '', '', '', '' }, -- set to true to use default signs, an array of 4 to specify custom signs
+        update_in_insert = false,
+      },
       dap_debug = false,
     }
-
-    -- 저장 시 자동 포맷
-    -- local format_sync_grp = vim.api.nvim_create_augroup('GoFormat', {})
-    -- vim.api.nvim_create_autocmd('BufWritePre', {
-    --   pattern = '*.go',
-    --   callback = function()
-    --     require('go.format').goimports()
-    --   end,
-    --   group = format_sync_grp,
-    -- })
   end,
 }
