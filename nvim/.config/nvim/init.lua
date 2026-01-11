@@ -182,7 +182,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = false
-vim.o.listchars = "space:·,tab:  "
+vim.o.listchars = 'space:·,tab:  '
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -199,8 +199,8 @@ vim.o.sidescrolloff = 8
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
-vim.g.completeopt = "menu,menuone,noselect,noinsert"
-vim.o.shortmess = vim.o.shortmess .. "c"
+vim.g.completeopt = 'menu,menuone,noselect,noinsert'
+vim.o.shortmess = vim.o.shortmess .. 'c'
 vim.o.pumheight = 10
 vim.o.showtabline = 2
 vim.o.showmode = false
@@ -668,6 +668,11 @@ require('lazy').setup({
       local servers = {
         -- init.lua 내부
         gopls = {
+          on_attach = function(client, bufnr)
+            if client.name == 'gopls' then
+              client.server_capabilities.semanticTokensProvider = nil
+            end
+          end,
           root_dir = require('lspconfig.util').root_pattern('go.mod', '.git'),
           settings = {
             gopls = {
@@ -779,7 +784,7 @@ require('lazy').setup({
         else
           return {
             timeout_ms = 500,
-            lsp_format = 'fallback',
+            lsp_format = 'never',
           }
         end
       end,
@@ -870,6 +875,7 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
+        ghost_text = { enabled = false },
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
 
