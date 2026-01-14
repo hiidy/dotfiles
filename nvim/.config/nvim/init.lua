@@ -693,6 +693,26 @@ require('lazy').setup({
           root_dir = require('lspconfig.util').root_pattern('buf.yaml', '.git'),
         },
         yamlls = {},
+        sqls = {
+          on_attach = function(client, bufnr)
+            -- sqls는 다른 LSP와 달리 전용 기능을 바인딩해주는 게 좋습니다.
+            -- 나중에 sqls.nvim 플러그인을 깔면 더 강력해집니다.
+            if client.name == 'sqls' then
+              client.server_capabilities.executeCommandProvider = true
+            end
+          end,
+          settings = {
+            sqls = {
+              connections = {
+                {
+                  driver = 'mysql',
+                  dataSourceName = 'root:password@tcp(127.0.0.1:3306)/simpleblog',
+                },
+              },
+            },
+          },
+        },
+
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
@@ -800,6 +820,7 @@ require('lazy').setup({
         go = { 'goimports', 'gofumpt' },
         proto = { 'buf' },
         yaml = { 'prettier' },
+        sql = { 'sqruff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
