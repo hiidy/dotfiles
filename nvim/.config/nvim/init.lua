@@ -663,12 +663,7 @@ require('lazy').setup({
       local servers = {
         -- init.lua 내부
         gopls = {
-          on_attach = function(client, bufnr)
-            if client.name == 'gopls' then
-              client.server_capabilities.semanticTokensProvider = nil
-            end
-          end,
-          init_options = {
+           init_options = {
             usePlaceholders = true,
           },
           root_dir = require('lspconfig.util').root_pattern('go.mod', '.git'),
