@@ -139,3 +139,11 @@ alias ...='cd ../..'
 export PATH="$PATH:$HOME/.local/bin"
 export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 export PATH=$PATH:/usr/local/opt/riscv-gnu-toolchain/bin
+# opencode
+export PATH=/Users/woong/.opencode/bin:$PATH
+
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
+
+# To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.p10k.zsh.
+[[ ! -f ~/dotfiles/zsh/.p10k.zsh ]] || source ~/dotfiles/zsh/.p10k.zsh
