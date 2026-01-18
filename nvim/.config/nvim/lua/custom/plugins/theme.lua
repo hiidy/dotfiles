@@ -1,18 +1,20 @@
 return {
-  'rebelot/kanagawa.nvim',
+  'catppuccin/nvim',
+  name = 'catppuccin',
   priority = 1000,
   config = function()
-    require('kanagawa').setup {
-      transparent = true, -- Ghostty 투명도 반영 필수!
-      theme = 'wave', -- wave, dragon, lotus 중 선택
-      overrides = function(colors)
-        return {
-          LineNr = { bg = 'none' },
-          SignColumn = { bg = 'none' },
-        }
-      end,
+    require('catppuccin').setup {
+      flavour = 'mocha', -- latte, frappe, macchiato, mocha
+      transparent_background = true, -- Ghostty 투명도 반영
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        treesitter = true,
+        mason = true,
+        telescope = { enabled = true },
+      },
     }
 
-    vim.cmd.colorscheme 'kanagawa'
+    vim.cmd.colorscheme 'catppuccin'
   end,
 }
