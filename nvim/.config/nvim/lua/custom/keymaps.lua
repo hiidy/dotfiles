@@ -56,9 +56,7 @@ vim.keymap.set("n", "<leader>ta", "<cmd>GoAddTag<CR>", { desc = "Add struct tags
 vim.keymap.set("n", "<leader>tr", "<cmd>GoRmTag<CR>", { desc = "Remove struct tags" })
 vim.keymap.set("n", "<leader>tc", "<cmd>GoClearTag<CR>", { desc = "Clear struct tags" })
 vim.keymap.set("n", "<leader>i", "<cmd>GoImports<CR>", { desc = "Organize imports" })
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
-vim.keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", { desc = "Go to Definition" })
+-- LSP 키맵은 lsp.lua의 on_attach에서 정의됨 (grn, grd, grr, gri 등)
+-- 아래는 추가 편의 키맵
 vim.keymap.set("n", "<CR>", "<cmd>FzfLua lsp_definitions<CR>", { desc = "Go to Definition" })
-vim.keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>", { desc = "Go to References" })
-vim.keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", { desc = "Go to Implementation" })
 vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
