@@ -1,8 +1,7 @@
 return {
   {
     'ibhagwan/fzf-lua',
-    -- icon support (Nerd Font가 있다면 자동 활성화)
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { 'echasnovski/mini.icons' },
     config = function()
       local fzf = require 'fzf-lua'
 

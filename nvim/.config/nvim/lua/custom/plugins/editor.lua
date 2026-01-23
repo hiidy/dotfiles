@@ -55,14 +55,6 @@ return {
     end,
   },
 
-  -- Todo comments
-  {
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = false },
-  },
-
   -- Detect indent
   'NMAC427/guess-indent.nvim',
 }
