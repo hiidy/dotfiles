@@ -36,34 +36,15 @@ if [[ ! -d $ZINIT_HOME ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-zinit ice depth=1
-zinit light romkatv/powerlevel10k
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice depth=1; zinit light zsh-users/zsh-completions
 
-zinit ice wait lucid
-zinit light zsh-users/zsh-completions
+autoload -Uz compinit && compinit
+zinit cdreplay -q
 
-zinit ice wait lucid
-zinit light zsh-users/zsh-autosuggestions
-
-zinit ice wait lucid
-zinit light Aloxaf/fzf-tab
-
-zinit ice wait lucid
-zinit light zsh-users/zsh-syntax-highlighting
-
-# ------------------------------
-# Compinit (캐싱)
-# ------------------------------
-autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-  compinit
-  [[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile ~/.zcompdump
-else
-  compinit -C
-fi
-
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+zinit ice depth=1; zinit light Aloxaf/fzf-tab
+zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
+zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
 
 # ------------------------------
 # Zsh History
