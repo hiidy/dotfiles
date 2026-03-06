@@ -20,7 +20,9 @@ typeset -U path
 path=(
   /opt/homebrew/bin
   $HOME/.local/bin
+  $HOME/.local/share/mise/shims
   $HOME/.antigravity/antigravity/bin
+  $HOME/google-cloud-sdk/bin
   $GOPATH/bin
   $path
 )
