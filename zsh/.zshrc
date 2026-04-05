@@ -1,17 +1,10 @@
 # ------------------------------
-# Powerlevel10k Instant Prompt
-# ------------------------------
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# ------------------------------
 # Environment Variables
 # ------------------------------
 export GOPATH="$HOME/go"
 export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+export CLAUDE_CODE_NO_FLICKER=1
 
 # ------------------------------
 # PATH
@@ -24,29 +17,64 @@ path=(
   $HOME/.antigravity/antigravity/bin
   $HOME/google-cloud-sdk/bin
   $GOPATH/bin
+  $HOME/tools/verible/bin
   $path
 )
 export PATH
 
 # ------------------------------
-# Zinit
+# Plugin Bootstrap (may print on first install — must be before Instant Prompt)
 # ------------------------------
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-if [[ ! -d $ZINIT_HOME ]]; then
-  mkdir -p "$(dirname $ZINIT_HOME)"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-source "${ZINIT_HOME}/zinit.zsh"
+ZSH_PLUGINS="$HOME/.zsh/plugins"
+[[ -d $ZSH_PLUGINS ]] || mkdir -p "$ZSH_PLUGINS"
 
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit ice depth=1; zinit light zsh-users/zsh-completions
+zcompile-many() {
+  local f
+  for f; do zcompile -R -- "$f".zwc "$f"; done
+}
+
+if [[ ! -e $ZSH_PLUGINS/powerlevel10k ]]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_PLUGINS/powerlevel10k
+  make -C $ZSH_PLUGINS/powerlevel10k pkg
+fi
+if [[ ! -e $ZSH_PLUGINS/zsh-completions ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-completions.git $ZSH_PLUGINS/zsh-completions
+fi
+if [[ ! -e $ZSH_PLUGINS/fzf-tab ]]; then
+  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git $ZSH_PLUGINS/fzf-tab
+  zcompile-many $ZSH_PLUGINS/fzf-tab/{fzf-tab.zsh,fzf-tab.plugin.zsh,lib/*.zsh}
+fi
+if [[ ! -e $ZSH_PLUGINS/zsh-syntax-highlighting ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_PLUGINS/zsh-syntax-highlighting
+  zcompile-many $ZSH_PLUGINS/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/*/*.zsh}
+fi
+if [[ ! -e $ZSH_PLUGINS/zsh-autosuggestions ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_PLUGINS/zsh-autosuggestions
+  zcompile-many $ZSH_PLUGINS/zsh-autosuggestions/{zsh-autosuggestions.zsh,src/**/*.zsh}
+fi
+
+# ------------------------------
+# Powerlevel10k Instant Prompt
+# ------------------------------
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# ------------------------------
+# Completions & Plugins
+# ------------------------------
+fpath=($ZSH_PLUGINS/zsh-completions/src $fpath)
 
 autoload -Uz compinit && compinit
-zinit cdreplay -q
+[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
+unfunction zcompile-many
 
-zinit ice depth=1; zinit light Aloxaf/fzf-tab
-zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
-zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+source $ZSH_PLUGINS/powerlevel10k/powerlevel10k.zsh-theme
+source $ZSH_PLUGINS/fzf-tab/fzf-tab.plugin.zsh
+source $ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # ------------------------------
 # Zsh History
@@ -62,12 +90,43 @@ setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
 
 # ------------------------------
-# Tool Init
+# Tool Init (cached eval to avoid fork+exec on every startup)
 # ------------------------------
-eval "$(atuin init zsh)"
-eval "$(mise activate zsh)"
+_cached_source() {
+  local name=$1 cmd=$2 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+  local cache_file="$cache_dir/$name.zsh" bin_path="${cmd%% *}"
+  bin_path="${commands[$bin_path]}"
+  [[ -n "$bin_path" ]] || return 1
+  if [[ ! -f "$cache_file" || "$bin_path" -nt "$cache_file" ]]; then
+    mkdir -p "$cache_dir"
+    eval "$cmd" > "$cache_file"
+  fi
+  source "$cache_file"
+}
 
-if command -v zoxide >/dev/null 2>&1; then
+_cached_source "atuin" "atuin init zsh"
+unfunction _cached_source
+
+# mise: shims already in PATH, skip `mise activate` to avoid fork+exec on every prompt.
+# Wrapper only needed for `mise shell` / `mise deactivate` (they eval in current shell).
+mise() {
+  local command="${1:-}"
+  if [[ "$#" -eq 0 ]]; then
+    command mise
+    return
+  fi
+  shift
+  case "$command" in
+    deactivate|shell|sh)
+      eval "$(command mise "$command" "$@")"
+      ;;
+    *)
+      command mise "$command" "$@"
+      ;;
+  esac
+}
+
+if (( $+commands[zoxide] )); then
   z() {
     unfunction z
     eval "$(zoxide init zsh)"
@@ -88,11 +147,11 @@ gsutil() { gcloud; gsutil "$@" }
 # ------------------------------
 (( $+commands[bat] )) && alias cat='bat'
 
-if (( $+commands[eza])); then
-    alias ls='eza'
-    alias ll='eza -lh --git'
-    alias la='eza -lah --git'
-    alias lt='eza --tree --level=2'
+if (( $+commands[eza] )); then
+  alias ls='eza'
+  alias ll='eza -lh --git'
+  alias la='eza -lah --git'
+  alias lt='eza --tree --level=2'
 fi
 
 (( $+commands[fd] )) && alias f='fd'
