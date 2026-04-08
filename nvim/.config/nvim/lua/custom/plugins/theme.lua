@@ -1,37 +1,37 @@
 return {
-  'rebelot/kanagawa.nvim',
+  'gbprod/nord.nvim',
   lazy = false,
   priority = 1000,
   opts = {
-    theme = 'wave',
     transparent = true,
-    dimInactive = false, -- transparent 모드에서는 끄는 게 자연스러움
-    colors = {
-      theme = {
-        all = {
-          ui = {
-            bg_gutter = 'none',
-          },
-        },
-      },
+    terminal_colors = true,
+    diff = { mode = 'bg' },
+    borders = true,
+    errors = { mode = 'bg' },
+    search = { theme = 'vim' },
+    styles = {
+      comments = { italic = true },
+      keywords = {},
+      functions = {},
+      variables = {},
+      -- transparent 모드에서 플로팅 창도 투명하게
+      sidebars = 'transparent',
+      floats = 'transparent',
     },
-    overrides = function(colors)
-      return {
-        -- 기존 설정
-        NormalFloat = { bg = 'none' },
-        FloatBorder = { bg = 'none' },
-        NormalDark = { bg = 'none' },
-        -- 추가: 더 일관된 투명 배경
-        LazyNormal = { bg = 'none' },
-        MasonNormal = { bg = 'none' },
-        TelescopeNormal = { bg = 'none' },
-        TelescopeBorder = { bg = 'none' },
-        WhichKeyFloat = { bg = 'none' },
-      }
+    on_highlights = function(highlights, _)
+      -- 기존 kanagawa 설정과 동일한 투명 배경 일관성 유지
+      highlights.NormalFloat = { bg = 'NONE' }
+      highlights.FloatBorder = { bg = 'NONE' }
+      highlights.LazyNormal = { bg = 'NONE' }
+      highlights.MasonNormal = { bg = 'NONE' }
+      highlights.TelescopeNormal = { bg = 'NONE' }
+      highlights.TelescopeBorder = { bg = 'NONE' }
+      highlights.WhichKeyFloat = { bg = 'NONE' }
+      highlights.SignColumn = { bg = 'NONE' }
     end,
   },
   config = function(_, opts)
-    require('kanagawa').setup(opts)
-    vim.cmd.colorscheme 'kanagawa'
+    require('nord').setup(opts)
+    vim.cmd.colorscheme 'nord'
   end,
 }

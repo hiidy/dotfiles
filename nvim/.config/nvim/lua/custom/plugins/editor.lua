@@ -48,12 +48,14 @@ return {
     },
   },
 
-  -- Mini.nvim collection (ai, surround만 사용, statusline은 lualine 사용)
+  -- Mini.nvim collection (ai, surround, icons만 사용, statusline은 lualine 사용)
   {
     'echasnovski/mini.nvim',
     config = function()
       require('mini.ai').setup { n_lines = 500 }
       require('mini.surround').setup()
+      -- 아이콘 공급자 (render-markdown, snacks 등이 require하면 활성화됨)
+      require('mini.icons').setup()
     end,
   },
 
