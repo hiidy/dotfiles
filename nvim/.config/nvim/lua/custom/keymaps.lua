@@ -1,7 +1,5 @@
 -- lua/custom/keymaps.lua
 
-local opts = { noremap = true, silent = true }
-
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -43,20 +41,8 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-q>", vim.cmd.quit, { desc = "Quit File" })
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", vim.cmd.write, { desc = "Save File" })
 
-vim.keymap.set('n', 's', '')
-vim.keymap.set('n', 'sv', '<cmd>vsplit<CR>', { desc = 'Vertical split' })
-vim.keymap.set('n', 'sh', '<cmd>split<CR>', { desc = 'Horizontal split' })
-vim.keymap.set('n', 'sc', '<C-w>c', { desc = 'Close window' })
-vim.keymap.set('n', 'so', '<C-w>o', { desc = 'Close other windows' })
-
-vim.keymap.set("n", "fe", "<cmd>GoIfErr<CR>", { desc = "Insert if err block" })
-vim.keymap.set("n", "fs", "<cmd>GoFillStruct<CR>", { desc = "Fill Struct" })
-vim.keymap.set("n", "<leader>fc", "<cmd>GoFillSwitch<CR>", { desc = "Fill Switch" })
-vim.keymap.set("n", "<leader>ta", "<cmd>GoAddTag<CR>", { desc = "Add struct tags" })
-vim.keymap.set("n", "<leader>tr", "<cmd>GoRmTag<CR>", { desc = "Remove struct tags" })
-vim.keymap.set("n", "<leader>tc", "<cmd>GoClearTag<CR>", { desc = "Clear struct tags" })
-vim.keymap.set("n", "<leader>i", "<cmd>GoImports<CR>", { desc = "Organize imports" })
--- LSP 키맵은 lsp.lua의 on_attach에서 정의됨 (grn, grd, grr, gri 등)
--- 아래는 추가 편의 키맵
-vim.keymap.set("n", "<CR>", "<cmd>FzfLua lsp_definitions<CR>", { desc = "Go to Definition" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
+-- Window 관리 (<leader>w 네임스페이스 — s 접두사는 mini.surround에 양보)
+vim.keymap.set('n', '<leader>wv', '<cmd>vsplit<CR>', { desc = '[W]indow [V]ertical split' })
+vim.keymap.set('n', '<leader>ws', '<cmd>split<CR>',  { desc = '[W]indow horizontal [S]plit' })
+vim.keymap.set('n', '<leader>wc', '<C-w>c',          { desc = '[W]indow [C]lose' })
+vim.keymap.set('n', '<leader>wo', '<C-w>o',          { desc = '[W]indow close [O]thers' })

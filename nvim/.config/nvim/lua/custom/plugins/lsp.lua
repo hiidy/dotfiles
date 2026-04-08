@@ -43,25 +43,14 @@ return {
           -- Execute a code action
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
-          local fzf = require 'fzf-lua'
-
-          -- [Fzf-Lua] Find references
-          map('grr', fzf.lsp_references, '[G]oto [R]eferences')
-
-          -- [Fzf-Lua] Goto Implementation
-          map('gri', fzf.lsp_implementations, '[G]oto [I]mplementation')
-
-          -- [Fzf-Lua] Goto Definition
-          map('grd', fzf.lsp_definitions, '[G]oto [D]efinition')
-
-          -- [Fzf-Lua] Document Symbols
-          map('gO', fzf.lsp_document_symbols, 'Open Document Symbols')
-
-          -- [Fzf-Lua] Workspace Symbols
-          map('gW', fzf.lsp_workspace_symbols, 'Open Workspace Symbols')
-
-          -- [Fzf-Lua] Type Definition
-          map('grt', fzf.lsp_typedefs, '[G]oto [T]ype Definition')
+          -- LSP navigation via Snacks.picker
+          map('gd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+          map('grr', function() Snacks.picker.lsp_references() end, '[G]oto [R]eferences')
+          map('gri', function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
+          map('grd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+          map('gO', function() Snacks.picker.lsp_symbols() end, 'Document Symbols')
+          map('gW', function() Snacks.picker.lsp_workspace_symbols() end, 'Workspace Symbols')
+          map('grt', function() Snacks.picker.lsp_type_definitions() end, '[G]oto [T]ype Definition')
 
           -- Goto Declaration
           map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -171,23 +160,6 @@ return {
           root_dir = require('lspconfig.util').root_pattern('buf.yaml', '.git'),
         },
         yamlls = {},
-        sqls = {
-          on_attach = function(client, bufnr)
-            if client.name == 'sqls' then
-              client.server_capabilities.executeCommandProvider = true
-            end
-          end,
-          settings = {
-            sqls = {
-              connections = {
-                {
-                  driver = 'mysql',
-                  dataSourceName = 'root:password@tcp(127.0.0.1:3306)/simpleblog',
-                },
-              },
-            },
-          },
-        },
         lua_ls = {
           settings = {
             Lua = {
