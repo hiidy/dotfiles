@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+
+# Logs & temp
+*.log
+*.bak
+.tmp/
+nvim/.tmp/
+nvim/.config/nvim/.nvimlog
+
+# Local state
+.claude/
+review.md
+
+# tmux plugins (managed by tpm)
+tmux/.config/tmux/plugins/
+
+# Secrets
+.env*
+*.pem
+*.key
