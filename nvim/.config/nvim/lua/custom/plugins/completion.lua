@@ -33,9 +33,19 @@ return {
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'lazydev' },
+      default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
       providers = {
         lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+        buffer = {
+          opts = {
+            -- 대용량 버퍼(5000+ 라인)에서 스캔 스톨 방지
+            get_bufnrs = function()
+              return vim.tbl_filter(function(bufnr)
+                return vim.api.nvim_buf_line_count(bufnr) < 5000
+              end, vim.api.nvim_list_bufs())
+            end,
+          },
+        },
       },
     },
 

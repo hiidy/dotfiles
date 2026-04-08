@@ -38,8 +38,8 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
-vim.keymap.set({ "i", "x", "n", "s" }, "<C-q>", vim.cmd.quit, { desc = "Quit File" })
-vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", vim.cmd.write, { desc = "Save File" })
+vim.keymap.set('n', '<C-q>', '<cmd>confirm quit<CR>', { desc = 'Quit File' })
+vim.keymap.set({ 'i', 'x', 'n', 's' }, '<C-s>', vim.cmd.write, { desc = 'Save File' })
 
 -- Window 관리 (<leader>w 네임스페이스 — s 접두사는 mini.surround에 양보)
 vim.keymap.set('n', '<leader>wv', '<cmd>vsplit<CR>', { desc = '[W]indow [V]ertical split' })

@@ -194,7 +194,7 @@ vim.o.sidescrolloff = 8
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
-vim.g.completeopt = 'menu,menuone,noselect,noinsert'
+vim.o.completeopt = 'menu,menuone,noselect'
 vim.o.shortmess = vim.o.shortmess .. 'c'
 vim.o.pumheight = 10
 vim.o.showtabline = 2
