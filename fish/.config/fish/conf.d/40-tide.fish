@@ -2,7 +2,7 @@ status is-interactive; or exit 0
 
 # Prompt layout
 set -g tide_left_prompt_items pwd git newline character
-set -g tide_right_prompt_items status cmd_duration context jobs direnv go terraform docker newline gcloud kubectl
+set -g tide_right_prompt_items status cmd_duration context jobs direnv go terraform docker gcloud kubectl
 
 # Global prompt behavior
 set -g tide_prompt_add_newline_before true
