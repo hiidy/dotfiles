@@ -1,0 +1,10 @@
+completions/
+functions/*
+themes/
+fish_variables
+fishd.*
+
+# conf.d: track user-authored numbered modules; keep Fisher-generated snippets ignored
+conf.d/*
+!conf.d/.gitkeep
+!conf.d/[0-9][0-9]-*.fish
