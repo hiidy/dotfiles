@@ -1,10 +1,11 @@
 return {
   'akinsho/bufferline.nvim',
   version = '*',
-  dependencies = { 'echasnovski/mini.icons' },
   event = { 'BufReadPre', 'BufNewFile' },
   config = function()
-    require('bufferline').setup {}
+    require('bufferline').setup {
+      highlights = require('catppuccin.special.bufferline').get_theme(),
+    }
 
     -- 탭 이동
     vim.keymap.set('n', '<Tab>', ':BufferLineCycleNext<CR>', { silent = true })
