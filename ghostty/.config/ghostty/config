@@ -1,0 +1,58 @@
+# Font
+font-family = "Sarasa Term K"
+font-family = "Symbols Nerd Font Mono"
+font-feature = -calt, -liga, -dlig
+font-size = 16
+adjust-cell-height = 2
+
+# Theme (catppuccin mocha, built-in)
+theme = "Catppuccin Mocha"
+
+# Cursor
+cursor-style = block
+cursor-style-blink = false
+
+# Window
+window-padding-x = 10
+window-padding-y = 10
+window-colorspace = display-p3
+background-opacity = 0.9
+background-blur = 20
+macos-titlebar-style = hidden
+window-save-state = always
+
+# Input / mouse
+copy-on-select = true
+macos-option-as-alt = true
+mouse-hide-while-typing = true
+
+# Clipboard safety
+clipboard-paste-protection = true
+clipboard-paste-bracketed-safe = true
+
+# Scrollback
+scrollback-limit = 25000000
+
+# Shell
+command = /opt/homebrew/bin/fish --login --interactive
+shell-integration = fish
+shell-integration-features = no-cursor
+
+# Splits — matches kitty f5/f6/f7/f1
+keybind = f5=new_split:down
+keybind = f6=new_split:right
+keybind = f7=toggle_split_zoom
+keybind = f1=toggle_split_zoom
+
+# Split navigation (smart-splits friendly)
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:down
+keybind = ctrl+k=goto_split:up
+keybind = ctrl+l=goto_split:right
+
+# Resize splits
+keybind = ctrl+alt+h=resize_split:left,10
+keybind = ctrl+alt+l=resize_split:right,10
+keybind = ctrl+alt+k=resize_split:up,10
+keybind = ctrl+alt+j=resize_split:down,10
+keybind = ctrl+alt+0=equalize_splits
