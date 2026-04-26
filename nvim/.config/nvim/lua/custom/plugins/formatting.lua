@@ -28,8 +28,11 @@ return {
     formatters_by_ft = {
       lua = { 'stylua' },
       go = { 'goimports', 'gofumpt' },
+      kcl = { 'kcl' },
       proto = { 'buf' },
       yaml = { 'prettier' },
+      ['yaml.github'] = { 'prettier' },
+      sh = { 'shfmt' },
       sql = { 'sqruff' },
     },
   },

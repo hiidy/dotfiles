@@ -26,6 +26,9 @@ return {
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
+
+      -- JSON/YAML schemas for jsonls and yamlls
+      'b0o/SchemaStore.nvim',
     },
     config = function()
       --  This function gets run when an LSP attaches to a particular buffer.
@@ -159,7 +162,30 @@ return {
         buf_ls = {
           root_dir = require('lspconfig.util').root_pattern('buf.yaml', '.git'),
         },
-        yamlls = {},
+        bashls = {
+          filetypes = { 'sh' },
+        },
+        docker_language_server = {
+          filetypes = { 'dockerfile' },
+        },
+        kcl = {},
+        yamlls = {
+          filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab', 'yaml.github', 'yaml.helm-values' },
+          settings = {
+            redhat = { telemetry = { enabled = false } },
+            yaml = {
+              format = { enable = true },
+              schemaStore = {
+                enable = false,
+                url = '',
+              },
+              schemas = require('schemastore').yaml.schemas(),
+              validate = true,
+              completion = true,
+              hover = true,
+            },
+          },
+        },
         lua_ls = {
           settings = {
             Lua = {
@@ -180,6 +206,10 @@ return {
         'golangci-lint',
         'buf',
         'yamllint',
+        'shfmt',
+        'shellcheck',
+        'hadolint',
+        'actionlint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
