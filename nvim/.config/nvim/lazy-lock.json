@@ -22,6 +22,7 @@
   "nvim-web-devicons": { "branch": "master", "commit": "c72328a5494b4502947a022fe69c0c47e53b6aa6" },
   "project.nvim": { "branch": "main", "commit": "99fe8d07d2bba173f147eadb09be5d114faa8605" },
   "render-markdown.nvim": { "branch": "main", "commit": "54d4b5431e9634ee3d8d30784e017239b5b89d41" },
+  "smart-splits.nvim": { "branch": "master", "commit": "ba2850ff3d3b09785a7105c69d06a12117d4b97d" },
   "snacks.nvim": { "branch": "main", "commit": "ad9ede6a9cddf16cedbd31b8932d6dcdee9b716e" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" }
 }

@@ -215,14 +215,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Auto-reload buffers when files change on disk (Claude Code 등 외부 편집 친화)
+-- libuv fs_event 기반 실시간 감지 + 다중 autocmd로 터미널 focus 고정 시나리오 커버
+-- Ref: https://richardgill.org/blog/configuring-neovim-coding-agents
 vim.o.autoread = true
-vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
-  desc = 'Check for external file changes',
-  group = vim.api.nvim_create_augroup('auto-checktime', { clear = true }),
+require('custom.hotreload').setup()
+require('custom.directory-watcher').setup { path = vim.fn.getcwd(), recursive = true }
+
+vim.api.nvim_create_autocmd('DirChanged', {
+  desc = 'Re-watch new cwd for external file changes',
+  group = vim.api.nvim_create_augroup('hotreload-dir', { clear = true }),
   callback = function()
-    if vim.fn.mode() ~= 'c' then
-      vim.cmd 'checktime'
-    end
+    require('custom.directory-watcher').setup { path = vim.fn.getcwd(), recursive = true }
   end,
 })
 
