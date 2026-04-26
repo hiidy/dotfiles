@@ -2,6 +2,7 @@ return {
   {
     'folke/snacks.nvim',
     lazy = false,
+    priority = 1000,
     ---@type snacks.Config
     opts = {
       picker = {
@@ -53,6 +54,7 @@ return {
       input = { enabled = true },
       terminal = { enabled = true },
       bigfile = { enabled = true },
+      dashboard = { enabled = true },
     },
     keys = {
       -- Explorer
