@@ -116,6 +116,7 @@ vim.o.number = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
+vim.o.mousescroll = 'ver:1,hor:1'
 
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
@@ -243,7 +244,7 @@ vim.api.nvim_create_autocmd('FileChangedShellPost', {
   desc = 'Notify when file was reloaded from disk',
   group = vim.api.nvim_create_augroup('auto-checktime-notify', { clear = true }),
   callback = function()
-    vim.notify('File changed on disk. Buffer reloaded.', vim.log.levels.WARN)
+    vim.notify('File changed on disk. Buffer reloaded.', vim.log.levels.INFO)
   end,
 })
 
@@ -282,6 +283,7 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
+  rocks = { hererocks = false },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
